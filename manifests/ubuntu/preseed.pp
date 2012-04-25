@@ -1,9 +1,9 @@
-declare cobbler::ubuntu::preseed($packages = '',
-                                 $late_command = '',
-                                 $proxy = '',
-                                 $password_crypted = '') {
+define cobbler::ubuntu::preseed($packages = '',
+                                $late_command = '',
+                                $proxy = '',
+                                $password_crypted = '') {
 
-    if ( ! defined(File['/etc/cobbler/preseeds']) {
+    if ( ! defined(File['/etc/cobbler/preseeds'])) {
         file { "/etc/cobbler/preseeds":
             ensure => directory
         }
