@@ -8,12 +8,12 @@ d-i partman/early_command string vgs --separator=: --noheadings | cut -f1 -d: | 
                                  do \
                                      if blockdev --getsize $dev > /dev/null 2>&1 ; \
                                      then \
-                                         usable_disk=$dev; \
+                                         first_usable_disk=$dev; \
                                          break; \
                                      fi; \
                                  done ; \
-             <% if expert_disk %>debconf-set partman-auto/expert_recipe "\$(debconf-get partman-auto/expert_recipe | sed -e "s%DETECT%$usable_disk%g")" ; <% end %> \
-                                 debconf-set partman-auto/disk "$usable_disk"
+             <% if expert_disk %>debconf-set partman-auto/expert_recipe "\$(debconf-get partman-auto/expert_recipe | sed -e "s%FIRST_USABLE%$first_usable_disk%g")" ; <% end %> \
+                                 debconf-set partman-auto/disk "\$(debconf-get partman-auto/disk | sed -e "s%FIRST_USABLE%$first_usable_disk%g")"
 <% if diskpart.length > 0 %>d-i partman-auto/disk string <% diskpart.each do |element| -%><%= element %> <% end %><% end %>
 d-i partman/alignment string cylinder
 d-i partman-md/device_remove_md boolean true
@@ -42,7 +42,7 @@ openstack ::                                    \
 200 200 200 ext3                                \
         $gptonly{ }                             \
         $primary{ }                             \
-        device{ DETECT }                        \
+        device{ <% boot_disk %> }               \
         method{ format } format{ }              \
         use_filesystem{ } filesystem{ ext3 }    \
         mountpoint{ /boot }                     \
